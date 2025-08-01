@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=studentrisk
+      - DB_SSLMODE=disable
+      - SERVER_ADDRESS=:8080
+      - RISK_ATTENDANCE_THRESHOLD=75.0
+      - RISK_ASSIGNMENT_THRESHOLD=50.0
+      - RISK_CONTACT_THRESHOLD=2
+      - RISK_LOW_THRESHOLD=0
+      - RISK_MEDIUM_THRESHOLD=2
+      - RISK_HIGH_THRESHOLD=3
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=studentrisk
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
